@@ -37,7 +37,7 @@ namespace Microting.eFormSportFederationBase.Infrastructure.Data.Factories
             var optionsBuilder = new DbContextOptionsBuilder<SportFederationPnDbContext>();
 
             optionsBuilder.UseMySql(args.Any() ? args[0] : defaultCs, new MariaDbServerVersion(
-                ServerVersion.AutoDetect(args.Any() ? args[0] : defaultCs)), mySqlOptionsAction: builder =>
+                new Version(10, 8, 0)), mySqlOptionsAction: builder =>
             {
                 builder.EnableRetryOnFailure();
             });
