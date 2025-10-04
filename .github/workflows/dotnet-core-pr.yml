@@ -1,0 +1,27 @@
+name: .NET Pull requests
+
+on:
+  pull_request:
+    branches: [ master, stable, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Start MariaDB
+      run: |
+        docker pull mariadb:10.8
+        docker run --name mariadbtest -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+    - name: Sleep 15 seconds
+      run: sleep 15
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.x
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Unit Tests
+      run: dotnet test --no-restore -c Release -v n Microting.eFormSportFederationBase.Tests/Microting.eFormSportFederationBase.Tests.csproj
